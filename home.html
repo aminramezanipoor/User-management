@@ -1,0 +1,101 @@
+<html lang="fa">
+<head>
+    <meta charSet="UTF-8">
+    <title>admin panel</title>
+    <link rel="stylesheet" href="style_panel.css">
+</head>
+<body>
+<div class="container-panel">
+    <div class="data" id="dat" style="overflow-y: scroll">
+        <div class="title-panel">پنل مدیریت دانش آموز</div>
+        <div class="head">
+            <div class="add">
+                <input type="submit" value="افزودن" onClick="window.location.href='form/form.html'">
+            </div>
+            <div class="search">
+                <label>
+                    <input type="text" placeholder="search🔍" id="input_search">
+                </label>
+            </div>
+        </div>
+        <table id="result">
+            <tr>
+                <th>نام</th>
+                <th> نام خانوادگی</th>
+                <th>سن</th>
+                <th>شماره</th>
+                <th>کدملی</th>
+                <th>شهر</th>
+                <th class="png">عملیات</th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    const students = JSON.parse(localStorage.getItem("students")) || [];
+    const resultDiv = document.getElementById('result');
+
+    document.addEventListener('DOMContentLoaded', function () {
+        displayData(students);
+        localStorage.removeItem('editStudentIndex');
+    });
+
+    function displayData(students) {
+        resultDiv.innerHTML = `
+            <tr>
+                <th>نام</th>
+                <th>نام خانوادگی</th>
+                <th>سن</th>
+                <th>شماره</th>
+                <th>کدملی</th>
+                <th>شهر</th>
+                <th class="png">عملیات</th>
+            </tr>
+        `;
+
+        if (students.length > 0) {
+            students.forEach((student, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>${student.first_name}</td>
+                    <td>${student.age}</td>
+                    <td>${student.phone}</td>
+                    <td>${student.ID}</td>
+                    <td>${student.city}</td>
+                    <td class="png">
+                        <img alt="delete" onclick="deleteStudent(${index})" src="https://img.icons8.com/?size=100&id=85387&format=png&color=000000" class="img">
+                        <img alt="edit" onclick="editStudent(${index})" src="https://img.icons8.com/?size=100&id=l28n9vfuKeSG&format=png&color=000000" class="img">
+                    </td>`;
+                resultDiv.appendChild(row);
+            });
+        } else {
+            resultDiv.innerHTML += "<tr class='tr'><td colspan='7'>هیچ دانش‌آموزی موجود نیست</td></tr>";
+            let data = document.getElementById("dat")
+            data.style.removeProperty("overflow-y")
+        }
+    }
+
+    function deleteStudent(index) {
+        students.splice(index, 1);
+        localStorage.setItem("students", JSON.stringify(students));
+        displayData(students);
+    }
+
+    function editStudent(index) {
+        localStorage.setItem("editStudentIndex", index);
+        window.location.href = "form/form.html";
+    }
+
+    const inputSearch = document.getElementById("input_search");
+    inputSearch.addEventListener("keyup", function () {
+        const filterText = inputSearch.value.toUpperCase();
+        const filteredStudents = students.filter(student =>
+            (student.name + " " + student.first_name).toUpperCase().includes(filterText)
+        );
+        displayData(filteredStudents);
+    });
+</script>
+</body>
+</html>

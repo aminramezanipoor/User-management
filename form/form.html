@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <div class="title" id="form_title">ثبت نام</div>
+    <form action="#" id="form">
+        <div class="user_data">
+            <div class="input_box">
+                <span class="datalist">اسم</span>
+                <label for="name"></label>
+                <input type="text" placeholder="اسم" class="name" id="name" required>
+            </div>
+            <div class="input_box">
+                <span class="datalist">فامیلی</span>
+                <label for="first"></label>
+                <input type="text" placeholder="فامیلی" id="first" required>
+            </div>
+            <div class="input_box">
+                <span class="datalist">شماره تلفن</span>
+                <label for="phone"></label>
+                <input type="number" placeholder="شماره تلفن" id="phone" required>
+            </div>
+            <div class="input_box">
+                <label class="datalist" for="age">سن</label>
+                <input type="number" placeholder="سن" id="age" required>
+            </div>
+            <div class="input_box">
+                <span class="datalist">کد ملی</span>
+                <label for="ID"></label>
+                <input type="number" placeholder="کد ملی" id="ID" required>
+            </div>
+            <div class="input_box">
+                <span class="datalist">شهر</span>
+                <label for="city"></label>
+                <input type="text" placeholder="شهر" id="city">
+            </div>
+        </div>
+        <div class="button" id="submit">
+            <input type="submit" value="ثبت" id="formButton">
+        </div>
+    </form>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function (event) {
+        let students = JSON.parse(localStorage.getItem("students")) || [];
+        const name = document.getElementById("name");
+        const first = document.getElementById("first");
+        const age = document.getElementById("age");
+        const ID = document.getElementById("ID");
+        const city = document.getElementById("city");
+        const phone = document.getElementById("phone");
+        const formTitel = document.getElementById("form_title");
+        const button = document.getElementById("formButton");
+
+        const editIndex = localStorage.getItem("editStudentIndex");
+        if (editIndex !== null) {
+            const student = students[editIndex];
+            name.value = student.name;
+            first.value = student.first_name;
+            age.value = student.age;
+            ID.value = student.ID;
+            city.value = student.city;
+            phone.value = student.phone;
+            formTitel.textContent = "ویرایش";
+            button.value = "ذخیره";
+        }
+        document.getElementById("form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const name = document.getElementById("name");
+            const first = document.getElementById("first");
+            const age = document.getElementById("age");
+            const ID = document.getElementById("ID");
+            const city = document.getElementById("city");
+            const phone = document.getElementById("phone");
+            const newsTudent = {
+                name: name.value,
+                first_name: first.value,
+                age: age.value,
+                ID: ID.value,
+                phone: phone.value,
+                city: city.value,
+            };
+            if (editIndex !== null) {
+                students[editIndex] = newsTudent;
+                localStorage.removeItem("editStudentIndex");
+            } else {
+                students.push(newsTudent);
+            }
+            localStorage.setItem("students", JSON.stringify(students));
+            window.location.href = "../home.html";
+        });
+
+    })
+</script>
+</body>
+</html>
